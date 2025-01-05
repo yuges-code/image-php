@@ -1,0 +1,25 @@
+{
+    "name": "yuges-code/image-php",
+    "description": "Image php class",
+    "license": "MIT",
+    "keywords": [
+        "yuges",
+        "image",
+        "image-php"
+    ],
+    "authors": [
+        {
+            "name": "Georgy",
+            "email": "goshasafonov@yandex.ru"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yuges\\Image\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
