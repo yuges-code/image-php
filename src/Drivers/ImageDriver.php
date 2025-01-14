@@ -27,7 +27,7 @@ interface ImageDriver
 
     public function crop(int $width, int $height, ?int $x = null, ?int $y = null): static;
 
-    public function rotate(?float $degrees = null): static;
+    public function rotate(?float $degrees = null, ?string $background = null): static;
 
     public function orientate(?Orientation $orientation = null): static;
 

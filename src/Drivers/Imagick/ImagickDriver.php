@@ -4,19 +4,22 @@ namespace Yuges\Image\Drivers\Imagick;
 
 use Imagick;
 use Yuges\Image\Data\Flip;
+use Yuges\Image\Data\Area;
+use Yuges\Image\Data\Size;
 use Yuges\Image\Enums\Orientation;
 use Yuges\Image\Drivers\ImageDriver;
+use Yuges\Image\Enums\AlignPosition;
 use Yuges\Image\Enums\FlipDirection;
 
 class ImagickDriver implements ImageDriver
 {
+    const string NAME = 'imagick';
+
     protected Imagick $image;
 
     protected array $exif = [];
 
-    private string $name = 'imagick';
-
-    public static function create(int $width, int $height, ?string $backgroundColor = null): self
+    public static function create(int $width, int $height, ?string $backgroundColor = null): static
     {
         $image = new Imagick;
         $color = ImagickColor::createFromString($backgroundColor);
@@ -29,7 +32,7 @@ class ImagickDriver implements ImageDriver
         return (new self)->setImage($image);
     }
 
-    public function loadFile(string $path): self
+    public function loadFile(string $path): static
     {
         $this->image = new Imagick($path);
         $this->exif = $this->image->getImageProperties('exif:*');
@@ -43,10 +46,20 @@ class ImagickDriver implements ImageDriver
 
     public function getName(): string
     {
-        return $this->name;
+        return self::NAME;
     }
 
-    public function setImage(Imagick $image): self
+    public function getArea(): Area
+    {
+        return new Area($this->getSize());
+    }
+
+    public function getSize(): Size
+    {
+        return new Size($this->getWidth(), $this->getHeight());
+    }
+
+    public function setImage(Imagick $image): static
     {
         $this->image = $image;
 
@@ -75,7 +88,7 @@ class ImagickDriver implements ImageDriver
 
 
 
-    public function flip(Flip|FlipDirection|null $flip = null): self
+    public function flip(Flip|FlipDirection|null $flip = null): static
     {
         if ($flip instanceof Flip) {
             $flip = $flip->getEnum();
@@ -103,17 +116,27 @@ class ImagickDriver implements ImageDriver
         return $this;
     }
 
-    public function crop(int $width, int $height, ?int $x = null, ?int $y = null): self
+    public function crop(int $width, int $height, ?int $x = null, ?int $y = null): static
     {
+        $area = Area::create($width, $height, $x, $y);
+
+        if (is_null($x) && is_null($y)) {
+            $canvas = $this->getArea();
+
+            $area
+                ->setCanvas($canvas)
+                ->align(AlignPosition::Center);
+        }
+
         foreach ($this->image as $image) {
-            $image->cropImage($width, $height, $x, $y);
+            $image->cropImage($area->size->width, $area->size->height, $area->pivot->x, $area->pivot->y);
             $image->setImagePage(0, 0, 0, 0);
         }
 
         return $this;
     }
 
-    public function rotate(?float $degrees = null, ?string $background = null): self
+    public function rotate(?float $degrees = null, ?string $background = null): static
     {
         if (! $background) {
             $background = ImagickColor::createFromString('none');
@@ -126,7 +149,7 @@ class ImagickDriver implements ImageDriver
         return $this;
     }
 
-    public function orientate(?Orientation $orientation = null): self
+    public function orientate(?Orientation $orientation = null): static
     {
         if (is_null($orientation)) {
             // $orientation = $this->getOrientationFromExif($this->exif);
@@ -137,9 +160,14 @@ class ImagickDriver implements ImageDriver
 
 
 
-    public function save(?string $path = null): self
+    public function save(?string $path = null): static
     {
-        $this->image->writeImage($path);
+        if ($this->isAnimated()) {
+            $image = $this->image->deconstructImages();
+            $image->writeImages($path, true);
+        } else {
+            $this->image->writeImage($path);
+        }
 
         return $this;
     }

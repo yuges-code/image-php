@@ -14,7 +14,7 @@ class ImagickColor implements Color
         int|float $green,
         int|float $blue,
         int|float|null $alpha = null
-    ): self
+    ): static
     {
         $instance = new static();
 
