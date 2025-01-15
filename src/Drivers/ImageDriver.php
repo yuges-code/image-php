@@ -2,9 +2,12 @@
 
 namespace Yuges\Image\Drivers;
 
+use Yuges\Image\Data\Area;
+use Yuges\Image\Data\Size;
 use Yuges\Image\Data\Flip;
 use Yuges\Image\Enums\Orientation;
 use Yuges\Image\Enums\FlipDirection;
+use Yuges\Image\Enums\ResizeConstraint;
 
 interface ImageDriver
 {
@@ -16,12 +19,22 @@ interface ImageDriver
 
     public function getImage(): mixed;
 
+    public function getArea(): Area;
+
+    public function getSize(): Size;
+
     public function getWidth(): int;
 
     public function getHeight(): int;
 
-    public function isAnimated(): bool;
 
+
+
+    public function resize(int $width, int $height, ?ResizeConstraint $constraints = null): static;
+
+    public function width(int $width, ?ResizeConstraint $constraints = ResizeConstraint::PreserveAspectRatio): static;
+
+    public function height(int $height, ?ResizeConstraint $constraints = ResizeConstraint::PreserveAspectRatio): static;
 
     public function flip(Flip|FlipDirection|null $flip = null): static;
 
@@ -31,6 +44,12 @@ interface ImageDriver
 
     public function orientate(?Orientation $orientation = null): static;
 
+    public function blur(int $blur): static;
+
+
+
+
+    public function base64(string $format = 'png', bool $prefix = true): string;
 
     public function save(?string $path = null): static;
 }

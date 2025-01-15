@@ -9,6 +9,15 @@ class ImagickColor implements Color
 {
     public ImagickPixel $pixel;
 
+    public static function create(string $color): static
+    {
+        $instance = new static();
+
+        $instance->pixel = new ImagickPixel('none');
+
+        return $instance;
+    }
+
     public static function createFromRgba(
         int|float $red,
         int|float $green,

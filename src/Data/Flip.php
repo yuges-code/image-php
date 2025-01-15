@@ -15,11 +15,11 @@ class Flip
     public function getEnum(): ?FlipDirection
     {
         if ($this->vertical && $this->horizontal) {
-            return FlipDirection::BOTH;
+            return FlipDirection::Both;
         } elseif ($this->vertical) {
-            return FlipDirection::VERTICAL;
+            return FlipDirection::Vertical;
         } elseif ($this->horizontal) {
-            return FlipDirection::HORIZONTAL;
+            return FlipDirection::Horizontal;
         }
 
         return null;

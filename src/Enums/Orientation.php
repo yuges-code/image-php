@@ -4,19 +4,19 @@ namespace Yuges\Image\Enums;
 
 enum Orientation: int
 {
-    case ROTATE0 = 0;
-    case ROTATE30 = 30;
-    case ROTATE45 = 45;
-    case ROTATE60 = 60;
-    case ROTATE90 = 90;
-    case ROTATE120 = 120;
-    case ROTATE135 = 135;
-    case ROTATE150 = 150;
-    case ROTATE180 = 180;
-    case ROTATE210 = 210;
-    case ROTATE225 = 225;
-    case ROTATE240 = 240;
-    case ROTATE270 = 270;
+    case Rotate0 = 0;
+    case Rotate30 = 30;
+    case Rotate45 = 45;
+    case Rotate60 = 60;
+    case Rotate90 = 90;
+    case Rotate120 = 120;
+    case Rotate135 = 135;
+    case Rotate150 = 150;
+    case Rotate180 = 180;
+    case Rotate210 = 210;
+    case Rotate225 = 225;
+    case Rotate240 = 240;
+    case Rotate270 = 270;
 
     public function degrees(): int
     {

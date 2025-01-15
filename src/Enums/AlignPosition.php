@@ -5,43 +5,43 @@ namespace Yuges\Image\Enums;
 enum AlignPosition: string
 {
     case Top = 'top';
-    case TopLeft = 'top-left';
-    case TopRight = 'top-right';
-    case TopCenter = 'top-center';
-    case TopMiddle = 'top-middle';
+    case TopLeft = 'topLeft';
+    case TopRight = 'topRight';
+    case TopCenter = 'topCenter';
+    case TopMiddle = 'topMiddle';
 
     case Bottom = 'bottom';
-    case BottomLeft = 'bottom-left';
-    case BottomRight = 'bottom-right';
-    case BottomCenter = 'bottom-center';
-    case BottomMiddle = 'bottom-middle';
+    case BottomLeft = 'bottomLeft';
+    case BottomRight = 'bottomRight';
+    case BottomCenter = 'bottomCenter';
+    case BottomMiddle = 'bottomMiddle';
 
     case Left = 'left';
-    case LeftTop = 'left-top';
-    case LeftBottom = 'left-bottom';
-    case LeftCenter = 'left-center';
-    case LeftMiddle = 'left-middle';
+    case LeftTop = 'leftTop';
+    case LeftBottom = 'leftBottom';
+    case LeftCenter = 'leftCenter';
+    case LeftMiddle = 'leftMiddle';
 
     case Right = 'right';
-    case RightTop = 'right-top';
-    case RightBottom = 'right-bottom';
-    case RightCenter = 'right-center';
-    case RightMiddle = 'right-middle';
+    case RightTop = 'rightTop';
+    case RightBottom = 'rightBottom';
+    case RightCenter = 'rightCenter';
+    case RightMiddle = 'rightMiddle';
 
     case Center = 'center';
-    case CenterTop = 'center-top';
-    case CenterLeft = 'center-left';
-    case CenterRight = 'center-right';
-    case CenterBottom = 'center-bottom';
+    case CenterTop = 'centerTop';
+    case CenterLeft = 'centerLeft';
+    case CenterRight = 'centerRight';
+    case CenterBottom = 'centerBottom';
 
     case Middle = 'middle';
-    case MiddleTop = 'middle-top';
-    case MiddleLeft = 'middle-left';
-    case MiddleRight = 'middle-right';
-    case MiddleBottom = 'middle-bottom';
+    case MiddleTop = 'middleTop';
+    case MiddleLeft = 'middleLeft';
+    case MiddleRight = 'middleRight';
+    case MiddleBottom = 'middleBottom';
 
-    case CenterCenter = 'center-center';
-    case MiddleMiddle = 'middle-middle';
+    case CenterCenter = 'centerCenter';
+    case MiddleMiddle = 'middleMiddle';
 
     public function unify(): AlignPositionUnified
     {

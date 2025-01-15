@@ -4,7 +4,7 @@ namespace Yuges\Image\Enums;
 
 enum FlipDirection: string
 {
-    case BOTH = 'both';
-    case VERTICAL = 'vertical';
-    case HORIZONTAL = 'horizontal';
+    case Both = 'both';
+    case Vertical = 'vertical';
+    case Horizontal = 'horizontal';
 }

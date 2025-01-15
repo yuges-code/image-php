@@ -3,13 +3,14 @@
 namespace Yuges\Image\Drivers\Imagick;
 
 use Imagick;
-use Yuges\Image\Data\Flip;
 use Yuges\Image\Data\Area;
 use Yuges\Image\Data\Size;
+use Yuges\Image\Data\Flip;
 use Yuges\Image\Enums\Orientation;
 use Yuges\Image\Drivers\ImageDriver;
 use Yuges\Image\Enums\AlignPosition;
 use Yuges\Image\Enums\FlipDirection;
+use Yuges\Image\Enums\ResizeConstraint;
 
 class ImagickDriver implements ImageDriver
 {
@@ -49,14 +50,9 @@ class ImagickDriver implements ImageDriver
         return self::NAME;
     }
 
-    public function getArea(): Area
+    public function getImage(): Imagick
     {
-        return new Area($this->getSize());
-    }
-
-    public function getSize(): Size
-    {
-        return new Size($this->getWidth(), $this->getHeight());
+        return $this->image;
     }
 
     public function setImage(Imagick $image): static
@@ -66,9 +62,14 @@ class ImagickDriver implements ImageDriver
         return $this;
     }
 
-    public function getImage(): Imagick
+    public function getArea(): Area
     {
-        return $this->image;
+        return new Area($this->getSize());
+    }
+
+    public function getSize(): Size
+    {
+        return new Size($this->getWidth(), $this->getHeight());
     }
 
     public function getWidth(): int
@@ -88,6 +89,35 @@ class ImagickDriver implements ImageDriver
 
 
 
+    public function resize(int $width, int $height, ?ResizeConstraint $constraints = null): static
+    {
+        // $resized = $this->getSize()->resize($width, $height, $constraints);
+
+        foreach ($this->image as $image) {
+            $image->scaleImage($width, $height);
+        }
+
+        return $this;
+    }
+
+    public function width(int $width, ?ResizeConstraint $constraints = ResizeConstraint::PreserveAspectRatio): static
+    {
+        $height = (int) round($width / $this->getSize()->aspectRatio());
+
+        $this->resize($width, $height, $constraints);
+
+        return $this;
+    }
+
+    public function height(int $height, ?ResizeConstraint $constraints = ResizeConstraint::PreserveAspectRatio): static
+    {
+        $width = (int) round($height * $this->getSize()->aspectRatio());
+
+        $this->resize($width, $height, $constraints);
+
+        return $this;
+    }
+
     public function flip(Flip|FlipDirection|null $flip = null): static
     {
         if ($flip instanceof Flip) {
@@ -100,14 +130,14 @@ class ImagickDriver implements ImageDriver
 
         foreach ($this->image as $image) {
             switch ($flip) {
-                case FlipDirection::VERTICAL:
+                case FlipDirection::Both:
                     $image->flipImage();
-                    break;
-                case FlipDirection::HORIZONTAL:
                     $image->flopImage();
                     break;
-                case FlipDirection::BOTH:
+                case FlipDirection::Vertical:
                     $image->flipImage();
+                    break;
+                case FlipDirection::Horizontal:
                     $image->flopImage();
                     break;
             }
@@ -139,11 +169,12 @@ class ImagickDriver implements ImageDriver
     public function rotate(?float $degrees = null, ?string $background = null): static
     {
         if (! $background) {
-            $background = ImagickColor::createFromString('none');
+            $background = ImagickColor::create('none');
         }
 
         foreach ($this->image as $image) {
             $image->rotateImage($background->getPixel(), $degrees);
+            $image->setImagePage(0, 0, 0, 0);
         }
 
         return $this;
@@ -158,7 +189,31 @@ class ImagickDriver implements ImageDriver
         return $this->rotate($orientation->degrees());
     }
 
+    public function blur(int $blur): static
+    {
+        foreach ($this->image as $image) {
+            $image->blurImage(0.5 * $blur, 0.1 * $blur);
+        }
 
+        return $this;
+    }
+
+
+
+
+
+
+    public function base64(string $format = 'png', bool $prefix = true): string
+    {
+        $image = clone $this->image;
+        $image->setFormat($format);
+
+        if ($prefix) {
+            return 'data:image/'.$format.';base64,'.base64_encode($image->getImageBlob());
+        }
+
+        return base64_encode($image->getImageBlob());
+    }
 
     public function save(?string $path = null): static
     {
