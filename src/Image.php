@@ -3,6 +3,7 @@
 namespace Yuges\Image;
 
 use Yuges\Image\Data\Flip;
+use Yuges\Image\Data\Size;
 use Yuges\Image\Enums\Orientation;
 use Yuges\Image\Enums\FlipDirection;
 use Yuges\Image\Drivers\Gd\GdDriver;
@@ -62,6 +63,23 @@ class Image
 
         return $image;
     }
+
+    public function getSize(): Size
+    {
+        return $this->driver->getSize();
+    }
+
+    public function getWidth(): int
+    {
+        return $this->driver->getWidth();
+    }
+
+    public function getHeight(): int
+    {
+        return $this->driver->getHeight();
+    }
+
+
 
 
 
