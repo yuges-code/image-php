@@ -5,9 +5,12 @@ namespace Yuges\Image;
 use Yuges\Image\Data\Flip;
 use Yuges\Image\Enums\Orientation;
 use Yuges\Image\Enums\FlipDirection;
+use Yuges\Image\Drivers\Gd\GdDriver;
 use Yuges\Image\Drivers\ImageDriver;
 use Yuges\Image\Enums\ResizeConstraint;
 use Yuges\Image\Factories\ImageDriverFactory;
+use Yuges\Image\Drivers\Imagick\ImagickDriver;
+use Yuges\Image\Exceptions\InvalidImageDriver;
 use Yuges\Image\Enums\ImageDriver as ImageDriverEnum;
 
 class Image
@@ -23,6 +26,11 @@ class Image
         $this->driver = ImageDriverFactory::create(ImageDriverEnum::Imagick)->loadFile($path);
     }
 
+    public static function open(string $path): static
+    {
+        return self::load($path);
+    }
+
     public static function load(string $path): static
     {
         if (! file_exists($path)) {
@@ -33,6 +41,27 @@ class Image
         return new static($path);
     }
 
+    public function loadFile(string $path): static
+    {
+        $this->driver->loadFile($path);
+
+        return $this;
+    }
+
+    public static function useDriver(ImageDriverEnum|string $driver): static
+    {
+        if (is_string($driver)) {
+            $driver = ImageDriverEnum::tryFrom($driver) ?? throw InvalidImageDriver::driver($driver);
+        }
+
+        $image = new static;
+        $image->driver = match ($driver) {
+            ImageDriverEnum::Gd => new GdDriver,
+            ImageDriverEnum::Imagick => new ImagickDriver,
+        };
+
+        return $image;
+    }
 
 
 
